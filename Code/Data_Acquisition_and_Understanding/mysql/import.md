@@ -35,3 +35,52 @@ total 8241376
 -rw-rw----  1 clemens  admin        2027 Jun  5 19:47 sensor_gps.frm
 -rw-rw----  1 clemens  admin       98304 Jun  5 19:47 sensor_gps.ibd
 ```
+
+## Unique devices
+
+```sql
+SELECT code_address, count(code_address)
+  FROM device 
+  GROUP BY code_address
+  ORDER BY count(code_address) DESC
+```
+
+```
+code_address, count(code_address)
+1368474	32432
+159232	21991
+493147	17488
+985594	16239
+983616	15000
+55808	14617
+1002504	14321
+1370351	13381
+94362	12293
+1625491	11294
+777621	11012
+```
+
+### 61440 devices > 99 keer gezien
+
+```sql
+SELECT count(*) FROM (
+  SELECT code_address, count(code_address)
+    FROM device 
+    GROUP BY code_address
+    HAVING count(code_address) > 99
+    ORDER BY count(code_address) DESC
+) MORE_99
+```
+
+### 1.762.000 < 100 keer gezien
+
+```sql
+SELECT count(*) FROM (
+  SELECT code_address, count(code_address)
+    FROM device 
+    GROUP BY code_address
+    HAVING count(code_address) < 100
+    ORDER BY count(code_address) DESC
+) LESS_100
+```
+1672368
