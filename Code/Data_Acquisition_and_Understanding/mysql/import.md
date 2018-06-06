@@ -10,7 +10,8 @@ CREATE TABLE `device` (
   `Duration` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Sensor` (`VirtualSensorCode`),
-  KEY `device` (`DateTimeLocal`)
+  KEY `device` (`DateTimeLocal`),
+  KEY `sensor_time` (`code_address`,`DateTimeLocal`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
@@ -84,3 +85,75 @@ SELECT count(*) FROM (
 ) LESS_100
 ```
 1672368
+
+## SensorByYear
+
+```sql
+DROP VIEW SensorByYear;
+CREATE VIEW SensorByYear AS
+/**
+EXPLAIN
+**/
+SELECT counts.*, s.`longitude`, s.`latitude` FROM (
+  SELECT VirtualSensorCode, YEAR(DateTimeLocal), count(VirtualSensorCode)
+    FROM device d
+    GROUP BY VirtualSensorCode, YEAR(DateTimeLocal)
+  ) counts
+ INNER JOIN sensor_gps s ON counts.VirtualSensorCode = s.sensor_id
+```
+
+## Nearest ping
+
+### Check
+
+```sql
+/**
+EXPLAIN
+CREATE VIEW nearest_ping AS
+**/
+SELECT a.*, (
+  SELECT id
+    FROM device
+   WHERE code_address = a.code_address AND DateTimeLocal > a.DateTimeLocal
+   ORDER BY DateTimeLocal ASC
+   LIMIT 1
+  ) nearest_id, (SELECT DateTimeLocal FROM device WHERE id = nearest_id) NextDateTimeLocal, (SELECT code_address FROM device WHERE id = nearest_id) device_id
+  FROM device a
+  ORDER BY DateTimeLocal ASC
+  LIMIT 10
+```
+
+### View
+
+```sql
+/**
+EXPLAIN
+**/
+DROP VIEW  nearest_ping
+
+CREATE VIEW nearest_ping AS
+SELECT a.*, (
+  SELECT id
+    FROM device
+   WHERE code_address = a.code_address AND DateTimeLocal > a.DateTimeLocal
+   ORDER BY DateTimeLocal ASC
+   LIMIT 1
+  ) nearest_id, (SELECT DateTimeLocal FROM device WHERE id = nearest_id) NextDateTimeLocal, (SELECT VirtualSensorCode FROM device WHERE id = nearest_id) sensor_id
+  FROM device a
+  ORDER BY DateTimeLocal ASC
+```
+
+### Device Graph
+
+```sql
+SELECT
+    `VirtualSensorCode` AS _from,
+    `sensor_id` AS _to,
+    DateTimeLocal,
+    NextDateTimeLocal,
+    NextDateTimeLocal - DateTimeLocal AS seconds
+  FROM `nearest_ping`
+  WHERE `sensor_id` IS NOT NULL
+    AND NextDateTimeLocal - DateTimeLocal < 3600
+ LIMIT 1000
+ ```
