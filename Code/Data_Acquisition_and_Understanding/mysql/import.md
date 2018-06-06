@@ -157,3 +157,25 @@ SELECT
     AND NextDateTimeLocal - DateTimeLocal < 3600
  LIMIT 1000
  ```
+
+### Walk in the city
+
+```sql
+SELECT
+    code_address AS device,
+    `VirtualSensorCode` AS _from,
+    `sensor_id` AS _to,
+    DateTimeLocal,
+    NextDateTimeLocal,
+    NextDateTimeLocal - DateTimeLocal AS seconds
+  FROM `nearest_ping`
+  WHERE `sensor_id` IS NOT NULL
+    /*
+    AND code_address < 100000
+    */
+    AND code_address = 94055
+    AND NextDateTimeLocal - DateTimeLocal < 36000 /* 10 hours */
+    AND VirtualSensorCode != sensor_id
+ LIMIT 1000
+ ```
+ 
