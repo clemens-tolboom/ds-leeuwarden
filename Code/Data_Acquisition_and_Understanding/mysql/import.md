@@ -161,6 +161,7 @@ SELECT
 ### Walk in the city
 
 ```sql
+SELECT * FROM (
 SELECT
     code_address AS device,
     `VirtualSensorCode` AS _from,
@@ -174,8 +175,10 @@ SELECT
     AND code_address < 100000
     */
     AND code_address = 94055
-    AND NextDateTimeLocal - DateTimeLocal < 36000 /* 10 hours */
+    AND NextDateTimeLocal - DateTimeLocal < 36000
     AND VirtualSensorCode != sensor_id
  LIMIT 1000
+ ) A
+ ORDER BY DateTimeLocal
  ```
  
