@@ -24,6 +24,19 @@ Dit project probeert de volgende vragen te beantwoorden indien de tijd dit toela
   - For_Modeling (gebruikt voor analyse)
 - Docs (startpunt voor lezen; nog leeg; TDSP heeft hier vele documenten)
 - Code
+  - Data_Acquisition_and_Understanding
+  - Modelling
+
+## Starten van Jupyter nodebooks
+
+```bash
+pipenv install
+jupyter notebook
+```
+
+### Notebooks
+
+- Code/Data_Acquisition_and_Understanding/Build dataset.ipynb
 
 ### TDSP Project Structure, and Documents and Artifact Templates
 
