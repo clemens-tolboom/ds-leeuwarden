@@ -154,15 +154,23 @@ EXPLAIN
 DROP VIEW  nearest_ping
 
 CREATE VIEW nearest_ping AS
-SELECT a.*, (
-  SELECT id
-    FROM device
-   WHERE code_address = a.code_address AND DateTimeLocal > a.DateTimeLocal
-   ORDER BY DateTimeLocal ASC
-   LIMIT 1
-  ) nearest_id, (SELECT DateTimeLocal FROM device WHERE id = nearest_id) NextDateTimeLocal, (SELECT VirtualSensorCode FROM device WHERE id = nearest_id) sensor_id
+SELECT g.id
+     , g.`VirtualSensorCode` AS _from_sensor
+     , g.`DateTimeLocal` AS _from_datetime
+     , g.`code_address` AS _device_id
+     , g.`Duration`AS _duration
+     , g.year
+     , g.month
+     , g.day
+     , d.`VirtualSensorCode` AS _next_sensor
+     , d.`DateTimeLocal` AS _next_datetime
+FROM
+(
+SELECT a.*, (SELECT id FROM device WHERE code_address = a.code_address AND DateTimeLocal > a.DateTimeLocal ORDER BY DateTimeLocal ASC LIMIT 1) next_id
   FROM device a
   ORDER BY DateTimeLocal ASC
+) g
+INNER JOIN device d on g.next_id = d.id
 ```
 
 ### Device Graph
@@ -221,4 +229,74 @@ SELECT
   GROUP BY DATE_FORMAT(DateTimeLocal, '%Y-%m'), VirtualSensorCode, sensor_id
 
   LIMIT 20
+```
+
+
+
+
+CREATE TABLE `device` (
+  `id` int(11) NOT NULL,
+  `VirtualSensorCode` int(11) DEFAULT NULL,
+  `DateTimeLocal` datetime DEFAULT NULL,
+  `code_address` int(11) DEFAULT NULL,
+  `Duration` float DEFAULT NULL,
+  `year` int(11) DEFAULT NULL,
+  `month` int(11) DEFAULT NULL,
+  `day` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Sensor` (`VirtualSensorCode`),
+  KEY `device` (`DateTimeLocal`),
+  KEY `sensor_time` (`code_address`,`DateTimeLocal`),
+  KEY `time_sensor` (`DateTimeLocal`,`VirtualSensorCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+UPDATE device
+   SET year = DATE_FORMAT(`DateTimeLocal`, '%Y')
+     , month = DATE_FORMAT(`DateTimeLocal`, '%m')
+     , day = DATE_FORMAT(`DateTimeLocal`, '%d')
+
+SELECT year, month, day, _from_sensor, _next_sensor, count(*) FROM nearest_ping GROUP BY year, month, day, _from_sensor, _next_sensor INTO OUTFILE '/Users/clemens/Sites/ds/leeuwarden/ds-leeuwarden/Sample_Data/Processed/nearest_ping_y_m_d.csv';
+
+
+
+
+
+```sql
+SELECT year, month, count(*) FROM device
+--   WHERE year > 2018
+  GROUP BY year, month
+```
+
+results into
+```
+2016	1	342774
+2016	2	509962
+2016	3	830134
+2016	4	1033960
+2016	5	1117265
+2016	6	1033004
+2016	7	1123429
+2016	8	1123330
+2016	9	1194045
+2016	10	1223339
+2016	11	1173062
+2016	12	1207320
+2017	1	1058163
+2017	2	974107
+2017	3	1247302
+2017	4	1339754
+2017	5	1552403
+2017	6	1248948
+2017	7	1393698
+2017	8	1305609
+2017	9	1278601
+2017	10	1456632
+2017	11	1464717
+2017	12	1390198
+2018	1	1251473
+2018	2	1169267
+2018	3	1388283
+2018	4	963917
 ```
