@@ -38,6 +38,12 @@ jupyter notebook
 
 - Code/Data_Acquisition_and_Understanding/Build dataset.ipynb
 
+### Resources
+
+#### QGIS
+
+https://anitagraser.com/projects/time-manager/
+
 ### TDSP Project Structure, and Documents and Artifact Templates
 
 Deze directory is gebaseerd op https://github.com/Azure/Azure-TDSP-ProjectTemplate waarnaar gerefereerd wordt op https://docs.microsoft.com/en-us/azure/machine-learning/team-data-science-process/agile-development

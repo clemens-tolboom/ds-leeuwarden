@@ -94,10 +94,32 @@ CREATE VIEW SensorByYear AS
 /**
 EXPLAIN
 **/
+SELECT
+    counts.*,
+    /* FIX source table: lon / lat swapped ?!? */
+    concat( 'POINT( ', s.latitude, ' ' ,s.longitude, ' )') AS point
+  FROM (
+    SELECT VirtualSensorCode AS sensor_id,
+        YEAR(DateTimeLocal) AS Year,
+        count(VirtualSensorCode) AS Aantal
+      FROM device d
+      GROUP BY VirtualSensorCode, YEAR(DateTimeLocal)
+  ) counts
+ INNER JOIN sensor_gps s ON counts.sensor_id = s.sensor_id
+```
+
+## SensorByYearMonth
+
+```sql
+DROP VIEW SensorByYearMonth;
+CREATE VIEW SensorByYearMonth AS
+/**
+EXPLAIN
+**/
 SELECT counts.*, s.`longitude`, s.`latitude` FROM (
-  SELECT VirtualSensorCode, YEAR(DateTimeLocal), count(VirtualSensorCode)
+  SELECT VirtualSensorCode, DATE_FORMAT(DateTimeLocal, '%Y-%m') AS YearMonth, count(VirtualSensorCode) AS Aantal
     FROM device d
-    GROUP BY VirtualSensorCode, YEAR(DateTimeLocal)
+    GROUP BY VirtualSensorCode, DATE_FORMAT(DateTimeLocal, '%Y-%m')
   ) counts
  INNER JOIN sensor_gps s ON counts.VirtualSensorCode = s.sensor_id
 ```
@@ -181,4 +203,22 @@ SELECT
  ) A
  ORDER BY DateTimeLocal
  ```
- 
+
+
+```sql
+/**
+EXPLAIN
+/**/
+SELECT
+    DATE_FORMAT(DateTimeLocal, '%Y-%m') AS _time
+  , VirtualSensorCode AS _from
+  , `sensor_id` AS _to
+  , count(*) AS _devices
+  FROM nearest_ping
+  WHERE DateTimeLocal < STR_TO_DATE('2018-01-01', '%Y-%m-%d')
+    AND sensor_id IS NOT NULL
+
+  GROUP BY DATE_FORMAT(DateTimeLocal, '%Y-%m'), VirtualSensorCode, sensor_id
+
+  LIMIT 20
+```
