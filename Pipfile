@@ -11,6 +11,9 @@ lxml = "*"
 matplotlib = "*"
 jupyter = "*"
 numpy = "*"
+geopy = "*"
+ipyleaflet = "*"
+scipy = "*"
 
 [dev-packages]
 
