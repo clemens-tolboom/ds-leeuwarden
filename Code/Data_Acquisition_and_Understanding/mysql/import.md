@@ -257,9 +257,15 @@ UPDATE device
      , month = DATE_FORMAT(`DateTimeLocal`, '%m')
      , day = DATE_FORMAT(`DateTimeLocal`, '%d')
 
+### 
+
+Onderstaande query duurde 5 uur:
+- -rw-rw-rw-  1 clemens  staff    0 Jun  9 16:01 nearest_ping_y_m_d.csv
+- -rw-rw-rw-  1 clemens  staff  1733468 Jun  9 19:56 nearest_ping_y_m_d.csv
+
+```sql
 SELECT year, month, day, _from_sensor, _next_sensor, count(*) FROM nearest_ping GROUP BY year, month, day, _from_sensor, _next_sensor INTO OUTFILE '/Users/clemens/Sites/ds/leeuwarden/ds-leeuwarden/Sample_Data/Processed/nearest_ping_y_m_d.csv';
-
-
+```
 
 
 
