@@ -99,12 +99,11 @@ SELECT
     /* FIX source table: lon / lat swapped ?!? */
     concat( 'POINT( ', s.latitude, ' ' ,s.longitude, ' )') AS point
   FROM (
-    SELECT VirtualSensorCode AS sensor_id,
-        YEAR(DateTimeLocal) AS Year,
+   SELECT VirtualSensorCode AS sensor_id,
+        `year`,
         count(VirtualSensorCode) AS Aantal
       FROM device d
-      GROUP BY VirtualSensorCode, YEAR(DateTimeLocal)
-  ) counts
+      GROUP BY VirtualSensorCode, `year`  ) counts
  INNER JOIN sensor_gps s ON counts.sensor_id = s.sensor_id
 ```
 
@@ -306,3 +305,46 @@ results into
 2018	3	1388283
 2018	4	963917
 ```
+
+
+
+
+select `VirtualSensorCode`, `code_address`, year, month , count(*)
+ from device 
+  where code_address =1368474 
+   group by VirtualSensorCode, `code_address`, `year`, `month`
+   order by VirtualSensorCode, `code_address`, `year`, `month`
+
+
+
+select year, month , count(*)
+ from device 
+  where code_address =1368474 
+   group by `year`, `month`
+   order by `year`, `month`
+
+
+select year, month, day , count(*)
+ from device 
+   group by `year`, `month`, day
+   order by `year`, `month`, day
+
+
+create table day_2016_11_17 as select * from device where year=2016 and month=11 and day = 17 
+
+
+
+select code_address, count(*), min(date_format(`DateTimeLocal`, '%h')), max(date_format(`DateTimeLocal`, '%h'))
+from `day_2016_11_17`
+where date_format(`DateTimeLocal`, '%h') >= '09'
+and date_format(`DateTimeLocal`, '%h') <= '17'
+group by code_address
+order by count(*) desc
+
+
+select code_address, count(*), min(date_format(`DateTimeLocal`, '%H')), max(date_format(`DateTimeLocal`, '%H')), max(date_format(`DateTimeLocal`, '%H')) - min(date_format(`DateTimeLocal`, '%H')) AS diff
+from `day_2016_11_17`
+where date_format(`DateTimeLocal`, '%H') >= '09'
+and date_format(`DateTimeLocal`, '%H') <= '21'
+group by code_address
+order by count(*) desc
