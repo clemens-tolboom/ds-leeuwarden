@@ -112,6 +112,7 @@ var rowIndex = 0;
 var datum = '';
 
 function draw() {
+    //background(0);
     drawSensors();
 
     // stroke(0, 0, 255);
