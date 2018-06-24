@@ -1,5 +1,7 @@
 # DS Leeuwarden
 
+This repo https://github.com/clemens-tolboom/ds-leeuwarden is part of https://github.com/KennisnetwerkDataScience/Wifi-punten-in-Leeuwarden.
+
 ## Onderzoeksvragen
 
 Dit project probeert de volgende vragen te beantwoorden indien de tijd dit toelaat
@@ -15,6 +17,18 @@ Dit project probeert de volgende vragen te beantwoorden indien de tijd dit toela
 - [ ] Welke patronen zijn er in combinatie met parkeertransacties? Wat is het effect van een volle parkeergarage? 
 - [ ] Keren bezoekers (frequenter) terug na een evenement? (bijv: mensen die 2 maanden voor een evenement niet in de Binnenstad waren, maar wel tijdens De Opening LF2018 (eind januari 2018) en ook in de 2 maanden erna)
 - [ ] Effect van gebeurtenissen (expo’s, evenementen bezoek gerelateerd op bezoek elders in de stad, bijvoorbeeld: wat doen bezoekers van Alma Tadema tentoonstelling in het Fries Museum verder nog in de binnenstad?)
+
+## Taken meeting 2
+
+### Aanwezig
+
+- Rob Wanders
+- Inne Lemstra
+- Clemens Tolboom
+
+- [ ] Clemens gaat device transities uitwerken
+- [ ] Rob en Inne gaan devices classificeren / van features voorzien
+- [ ] Samen zouden er verschillende paden kunnen ontstaan van devices door het centrum
 
 ## Project structuur
 
